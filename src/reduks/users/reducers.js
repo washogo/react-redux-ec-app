@@ -7,19 +7,6 @@ export const UsersReducer = (state = initialState.users, action) => {
       return {
         ...state,
         ...action.payload,
-        // icon: "",
-        // isSignedIn: false,
-        // uid: "",
-        // username: "",
-        // +
-        // isSignedIn: action.payload.isSignedIn,
-        // uid: action.payload.uid,
-        // username: action.payload.username,
-        // =
-        // icon: "",
-        // isSignedIn: action.payload.isSignedIn,
-        // uid: action.payload.uid,
-        // username: action.payload.username,
       };
     default:
       return state;

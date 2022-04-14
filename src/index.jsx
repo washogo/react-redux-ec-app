@@ -4,7 +4,6 @@ import createStore from "./reduks/store/store";
 import { Provider } from "react-redux";
 import { ConnectedRouter } from "connected-react-router";
 import * as History from "history";
-import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
