@@ -1,11 +1,43 @@
 import { signInAction } from "./actions";
 import { push } from "connected-react-router";
-import { auth, db, FirebaseTimestamp } from "../../firebase/index";
+import {
+  auth,
+  db,
+  FirebaseTimestamp,
+  onAuthStateChanged,
+} from "../../firebase/index";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
+
+export const listenAuthState = () => {
+  return async (dispatch) => {
+    return onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const uid = user.uid;
+        
+        getDoc(doc(db, "users", `${uid}`)).then((snapshot) => {
+          const data = snapshot.data;
+
+          dispatch(
+            signInAction({
+              isSignedIn: true,
+              role: data.role,
+              uid: uid,
+              username: data.username,
+            })
+          );
+
+          dispatch(push("/"));
+        });
+      } else {
+        dispatch(push("/signin"));
+      }
+    });
+  };
+};
 
 export const signIn = (email, password) => {
   return async (dispatch) => {
@@ -23,17 +55,18 @@ export const signIn = (email, password) => {
 
         getDoc(doc(db, "users", `${uid}`)).then((snapshot) => {
           const data = snapshot.data;
-          
-          dispatch(signInAction({
-            isSignedIn: true,
-            role: data.role,
-            uid: uid,
-            username: data.username,
-          }))
 
-          dispatch(push("/"))
+          dispatch(
+            signInAction({
+              isSignedIn: true,
+              role: data.role,
+              uid: uid,
+              username: data.username,
+            })
+          );
 
-        })
+          dispatch(push("/"));
+        });
       }
     });
   };
