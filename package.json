@@ -1,5 +1,5 @@
 {
-  "name": "ec-app",
+  "name": "react-redux-ec-app",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

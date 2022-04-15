@@ -1,14 +1,12 @@
-import { signInAction } from "./actions";
+import { signInAction, signOutAction } from "./actions";
 import { push } from "connected-react-router";
-import {
-  auth,
-  db,
-  FirebaseTimestamp,
-  onAuthStateChanged,
-} from "../../firebase/index";
+import { auth, db, FirebaseTimestamp } from "../../firebase/index";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut,
+  sendPasswordResetEmail,
 } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
@@ -17,7 +15,7 @@ export const listenAuthState = () => {
     return onAuthStateChanged(auth, (user) => {
       if (user) {
         const uid = user.uid;
-        
+
         getDoc(doc(db, "users", `${uid}`)).then((snapshot) => {
           const data = snapshot.data;
 
@@ -115,3 +113,28 @@ export const signUp = (username, email, password, confirmPassword) => {
     );
   };
 };
+
+export const signOuter = () => {
+  return async (dispatch) => {
+    signOut(auth).then(() => {
+      dispatch(signOutAction());
+      dispatch(push("/signin"));
+    });
+  };
+};
+
+export const resetPassword = (email) => {
+  return async (dispatch) => {
+    if (email === "") {
+      alert("必須項目が未入力です")
+      return false;
+    } else {
+      sendPasswordResetEmail(auth, email).then(() => {
+          alert("入力されたアドレスにパスワードリセット用のメールをお送りしました。")
+          dispatch(push("/signin"))
+      }).catch(() => {
+        alert("パスワードリセットに失敗しました。")
+      })
+    }
+  }
+}
